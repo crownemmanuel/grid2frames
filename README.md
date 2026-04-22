@@ -1,3 +1,11 @@
+---
+title: Grid2Frame
+sdk: gradio
+sdk_version: 6.1.0
+app_file: app.py
+license: mit
+---
+
 # Grid2Frame
 
 Extract individual images from a grid, collage, storyboard, or contact-sheet style image.
