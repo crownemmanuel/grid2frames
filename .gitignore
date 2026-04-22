@@ -1,0 +1,9 @@
+.next/
+node_modules/
+.venv/
+*.zip
+*.jpg
+*.jpeg
+*.png
+*.webp
+!app/icon.svg
