@@ -7,3 +7,6 @@ node_modules/
 *.png
 *.webp
 !app/icon.svg
+__pycache__/
+*.pyc
+.gradio/
