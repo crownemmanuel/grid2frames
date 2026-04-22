@@ -22,7 +22,7 @@ def process_image(
     output_format: str,
 ):
     if not image_path:
-        return None, "<span>No image loaded</span>", [], None
+        return None, "<span>No image loaded</span>", [], None, None
 
     run_dir = Path(tempfile.mkdtemp(prefix="run-", dir=WORK_ROOT))
     image = read_image(image_path)
@@ -34,7 +34,7 @@ def process_image(
     )
 
     if not result.regions:
-        return None, "<span>No frames detected</span>", [], None
+        return None, "<span>No frames detected</span>", [], None, None
 
     annotated = annotate_regions(image, result.regions)
     annotated_path = run_dir / "detected-grid.jpg"
@@ -63,11 +63,11 @@ def process_image(
         f"<span>{len(result.regions)} frames extracted from "
         f"{result.columns} columns x {result.rows} rows</span>"
     )
-    return str(annotated_path), status, frame_paths, str(zip_path)
+    return str(annotated_path), status, frame_paths, str(zip_path), str(zip_path)
 
 
 def clear_outputs():
-    return None, "<span>No image loaded</span>", [], None
+    return None, "<span>No image loaded</span>", [], None, None
 
 
 def extension_for_format(output_format: str) -> str:
@@ -145,6 +145,11 @@ def build_app() -> gr.Blocks:
                 )
                 extract_button = gr.Button("Extract", variant="primary")
                 zip_file = gr.File(label="Download ZIP", elem_classes="zip-download")
+                zip_button = gr.DownloadButton(
+                    "Download all frames",
+                    variant="primary",
+                    elem_classes="zip-button",
+                )
 
         with gr.Column(elem_classes="frames-section"):
             gr.HTML("<div class='section-head'><h2>Extracted frames</h2></div>")
@@ -164,7 +169,7 @@ def build_app() -> gr.Blocks:
             separator_mode,
             output_format,
         ]
-        extract_outputs = [annotated_image, status, gallery, zip_file]
+        extract_outputs = [annotated_image, status, gallery, zip_file, zip_button]
 
         input_image.upload(process_image, extract_inputs, extract_outputs)
         extract_button.click(process_image, extract_inputs, extract_outputs)
@@ -282,6 +287,10 @@ button.primary,
 
 .zip-download {
   background: #d7efea !important;
+}
+
+.zip-button {
+  width: 100% !important;
 }
 
 .frames-section {
